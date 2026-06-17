@@ -113,6 +113,10 @@ knowledge skills that carry RouterOS best-practices and link to the MikroTik doc
   and a kids WLAN with forced family-safe DNS and a `time`-matcher internet curfew (no flash wear).
 - **`mikrotik-vpn`** — WireGuard (road-warrior & site-to-site), L2TP/IPsec for native OS clients,
   IPsec site-to-site, and the firewall/routing to make them work.
+- **`mikrotik-hardening`** — secure & maintain: services/users/discovery lockdown, backup & export,
+  RouterOS/firmware upgrade, reset.
+- **`mikrotik-monitoring`** — health/resource, logging & remote syslog, Netwatch alerts, live/historical
+  traffic, and SNMP / Traffic Flow integration.
 
 ## Safety
 
