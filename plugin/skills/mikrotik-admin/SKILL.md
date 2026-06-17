@@ -29,9 +29,20 @@ tools over shelling out; they handle transports, the router inventory, and safet
   unless the router has been made writable in config. Do not try to work around this.
 - **Before any write**, state plainly what will change and confirm with the user. Never modify
   firewall, addressing, or routing without explicit confirmation — a mistake can lock the admin out.
-- Never paste router passwords into chat. Routers are referenced by inventory name; credentials live
-  in the server's environment.
+- **Credentials — prefer the inventory, but be pragmatic.** Referencing a router by an inventory name
+  keeps its password in the server's environment rather than the chat, which is the cleaner pattern.
+  For a quick home setup, ad-hoc `host`/`username`/`password` is perfectly fine if the user prefers the
+  convenience — don't lecture or block them over it. **After initial setup, recommend** creating a
+  dedicated, least-privilege RouterOS user for the AI and saving it as a named inventory entry
+  (password via `TIK4MCP_Routers__<name>__Password`); see `router-init` and `mikrotik-hardening`.
 - When a write is rejected by policy, explain that the router is read-only rather than retrying.
+- **Safe Mode (today's limitation).** RouterOS Safe Mode auto-reverts config changes if the
+  controlling session drops — but it only works **within one continuous session**. Because each
+  `mikrotik_command` call currently opens and closes its own connection, Safe Mode cannot span multiple
+  tool calls, so don't promise it for multi-step edits. Until a single-session batch tool exists (see
+  the development plan), get the same protection by working **reversibly**: add rules with
+  `=disabled=yes`, verify, then enable; change one thing at a time; and always keep your own access
+  path open.
 - **Protect the router's flash — avoid recurring config writes.** Every config change (including a
   `/system/scheduler` job that flips a rule's `disabled` flag or add/removes objects) is persisted to
   the router's NAND/flash; doing it on a frequent schedule wears the storage and can eventually kill a

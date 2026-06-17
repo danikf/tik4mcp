@@ -82,8 +82,8 @@ fix means publishing a new alpha and bumping `$(Tik4NetVersion)`. Key tik4net en
 Shipped both as a dotnet tool (`tik4mcp`) and as a **Claude Code plugin** under `plugin/`
 (`.claude-plugin/plugin.json`, `.mcp.json`, and skills under `plugin/skills/`: `mikrotik-admin`,
 `router-init`, `mikrotik-firewall`, `mikrotik-ip`, `mikrotik-mangle-queue`, `mikrotik-home-wifi`, `mikrotik-vpn`, `mikrotik-hardening`,
-`mikrotik-monitoring`). Keep the plugin's tool descriptions and the skills' guidance in sync with the
-actual tools in `src/`.
+`mikrotik-monitoring`, `mikrotik-bridging-vlan`, `mikrotik-capsman`). Keep the plugin's tool
+descriptions and the skills' guidance in sync with the actual tools in `src/`.
 
 **Design direction — skills over native tools.** The strategic bet is a *thin server*
 (one guarded `mikrotik_command` + safety/inventory/discovery + a few read conveniences) plus *rich

@@ -70,8 +70,10 @@ SSIDs; inline dotted props above are fine for a few.)
 
 dst-NAT **all** DNS from the kids subnet to a filtering resolver, so it applies no matter what DNS a
 device is configured with. Pick a provider:
+- **Cloudflare for Families** ([1.1.1.1 for Families](https://developers.cloudflare.com/1.1.1.1/setup/#1111-for-families)) —
+  malware **+ adult content**: `1.1.1.3` / `1.0.0.3` (IPv6 `2606:4700:4700::1113` / `::1003`);
+  malware **only**: `1.1.1.2` / `1.0.0.2` (IPv6 `2606:4700:4700::1112` / `::1002`).
 - **OpenDNS FamilyShield**: `208.67.222.123`, `208.67.220.123`
-- **Cloudflare for Families** (malware + adult): `1.1.1.3`, `1.0.0.3`
 
 Redirect UDP and TCP 53:
 - `/ip/firewall/nat/add` · `=chain=dstnat` · `=src-address=192.168.20.0/24` · `=protocol=udp` ·
@@ -149,4 +151,7 @@ Guests get internet only — no access to other home networks or the router (exc
   [Scheduler](https://manual.mikrotik.com/docs/cli-reference/system/scheduler/) ·
   [DNS](https://manual.mikrotik.com/docs/network-management/dns) ·
   [DHCP](https://manual.mikrotik.com/docs/network-management/dhcp)
-- Related skills: `mikrotik-ip`, `mikrotik-firewall`, `mikrotik-mangle-queue`, `mikrotik-admin`.
+- [Cloudflare 1.1.1.1 for Families](https://developers.cloudflare.com/1.1.1.1/setup/#1111-for-families)
+  (family-safe DNS addresses)
+- Related skills: `mikrotik-ip`, `mikrotik-firewall`, `mikrotik-bridging-vlan`, `mikrotik-capsman`,
+  `mikrotik-mangle-queue`, `mikrotik-admin`.

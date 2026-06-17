@@ -84,10 +84,18 @@ the user's intent. A minimal, safe baseline:
 Once the LAN address is up and you can reach the router by IP, move off the MAC layer onto the API
 for the rest of setup and ongoing monitoring (faster, supports Listen/streaming):
 
-1. Make sure the API service is enabled: `/ip/service/print` (look at `api` / `api-ssl`); enable with
-   `/ip/service/set` · `=numbers=api` · `=disabled=no` if needed.
-2. Reconnect ad-hoc as `<newadmin>` with `transport=Api` (or `ApiSsl`) and `host=192.168.88.1`.
-3. Suggest the operator add this router to the tik4mcp **inventory** (a named entry, password via
+1. Make sure the API service is enabled: `/ip/service/print` (look at `api` / `api-ssl`); enable plain
+   `api` with `/ip/service/set` · `=numbers=api` · `=disabled=no` if needed.
+2. **If you intend to use `ApiSsl` (or `RestSsl`), create and assign a certificate FIRST** — the SSL
+   service won't present TLS without one. Create a self-signed server cert, sign it, and attach it:
+   - `/certificate/add` · `=name=api-cert` · `=common-name=<router-ip-or-name>` · `=days-valid=3650` · `=key-usage=tls-server`
+   - `/certificate/sign` · `=numbers=api-cert` (signing runs in the background; check with `/certificate/print`)
+   - `/ip/service/set` · `=numbers=api-ssl` · `=certificate=api-cert` · `=disabled=no`
+
+   tik4mcp's SSL transports accept a self-signed router cert by default (`AllowInvalidCertificate`),
+   so no client-side trust setup is needed. For a fuller CA setup, see `mikrotik-hardening`.
+3. Reconnect ad-hoc as `<newadmin>` with `transport=Api` (or `ApiSsl`) and `host=192.168.88.1`.
+4. Suggest the operator add this router to the tik4mcp **inventory** (a named entry, password via
    `TIK4MCP_Routers__<name>__Password`) so future sessions use the name instead of ad-hoc creds.
 
 ## Step 5 — Harden the default admin (do this LAST)

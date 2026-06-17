@@ -117,6 +117,10 @@ knowledge skills that carry RouterOS best-practices and link to the MikroTik doc
   RouterOS/firmware upgrade, reset.
 - **`mikrotik-monitoring`** — health/resource, logging & remote syslog, Netwatch alerts, live/historical
   traffic, and SNMP / Traffic Flow integration.
+- **`mikrotik-bridging-vlan`** — bridges, bridge VLAN filtering (tagged/untagged, PVID), VLAN
+  interfaces for L3, hardware offload/switch chip, and loop protection (RSTP).
+- **`mikrotik-capsman`** — centralized multi-AP Wi-Fi (CAPsMAN), both wifiwave2 (`/interface/wifi`) and
+  legacy (`/caps-man`): manager, provisioning, shared SSIDs, and per-SSID VLAN datapath.
 
 ## Safety
 

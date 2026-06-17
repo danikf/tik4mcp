@@ -52,8 +52,9 @@ A wrong rule can **lock you out instantly**. Always:
 
 1. **Confirm with the user** before any filter/NAT change; restate the intended effect.
 2. **Protect your own access first.** If managing remotely, ensure an `accept` rule for your
-   management source precedes any new `drop`. Consider RouterOS **Safe Mode** for risky edits so a
-   dropped session auto-reverts.
+   management source precedes any new `drop`. (RouterOS **Safe Mode** would auto-revert on a dropped
+   session, but it only spans a *single* session — it does **not** carry across separate
+   `mikrotik_command` calls, so don't rely on it here; see the safe-mode note in `mikrotik-admin`.)
 3. **Order matters — be explicit.** New filter rules append to the end by default (often *after* a
    drop, so they never match). Use `=place-before=<id>` on add, or `/ip/firewall/filter/move` with
    `=numbers=<id> =destination=<pos>`. Always re-print and verify order after changing.

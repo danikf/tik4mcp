@@ -17,6 +17,17 @@ are writes (confirm first). Composes `mikrotik-admin` (safety), `mikrotik-firewa
   errors = cabling/duplex/SFP issues).
 - `mikrotik_logs` (`/log/print`) — recent events. `/ip/dhcp-server/lease/print` — who's on the network.
 
+## Reading the log (hint)
+
+The log is the first place to look when diagnosing. Use `mikrotik_logs` (it returns the most recent
+entries; pass a `limit`) or `/log/print`. Tips:
+- **Filter by topic** instead of scrolling everything: `/log/print` with a query, e.g.
+  `?topics=firewall`, `?topics=dhcp`, `?topics=wireless`, `?topics=error`. Combine topics to narrow.
+- Entries are **oldest→newest**; the newest are at the bottom — read the tail. The default memory log
+  is small and **cleared on reboot**, so set up retention (below) before you need history.
+- Correlate by the `time` column; for a specific subsystem also check its own state
+  (e.g. `/ip/dhcp-server/lease`, `/interface/wireless/registration-table`) alongside the log.
+
 ## Logging — keep useful history
 
 RouterOS logs to a small memory buffer by default (lost on reboot). For retention, add a **remote

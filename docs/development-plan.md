@@ -67,6 +67,17 @@ Every write passes through `AccessPolicy.EnsureAllowed`. Every connection is bui
   second `mikrotik_confirm` call applies it.
 - **Path allowlist/denylist** and per-router rate limiting.
 - **Backup-before-change** (`/system/backup` or export) + documented rollback.
+- **Safe Mode batch tool.** RouterOS Safe Mode auto-reverts changes if the controlling session drops,
+  but it only works **within one session** — and tik4mcp currently opens a fresh connection per tool
+  call, so Safe Mode can't span calls. Design: a single `mikrotik_safe_batch` tool that takes an
+  ordered list of commands, opens **one** connection, enters Safe Mode, runs them all, and releases
+  Safe Mode only on success; any error or a dropped connection mid-batch triggers RouterOS auto-revert.
+  Notes: (1) the binary API doesn't expose Safe Mode — implement over a **CLI/terminal transport**
+  (WinBox-CLI/SSH/Telnet) that can send the Safe-Mode toggle via the raw `ITikSession`; (2) pairs with
+  dry-run/approval (preview the batch, then commit). An alternative is a persistent **session-handle**
+  API (open → many calls → commit/close with idle-timeout auto-revert) — more flexible but more
+  lifecycle state; prefer the batch tool first. Until then, skills use reversible
+  add-disabled→verify→enable edits (documented in `mikrotik-admin`).
 
 ### M3 — Domain coverage: **skills first, native tools only where they earn it**
 Direction decided: rather than hand-code a typed C# tool per RouterOS object type, keep the server
@@ -76,7 +87,8 @@ judgment + current facts, which skills deliver more cheaply and maintainably tha
 
 - **Skills (done / ongoing):** `mikrotik-admin`, `router-init`, `mikrotik-firewall`, `mikrotik-ip`,
   `mikrotik-mangle-queue`, `mikrotik-home-wifi`, `mikrotik-vpn`, `mikrotik-hardening`,
-  `mikrotik-monitoring`. Next candidates: CAPsMAN multi-AP, bridging/VLAN/switching, containers.
+  `mikrotik-monitoring`, `mikrotik-bridging-vlan`, `mikrotik-capsman`. Next candidates: containers,
+  routing protocols (OSPF/BGP), hotspot.
 - **Native tools** stay limited to: the guarded raw command, discovery, inventory, and a few
   read conveniences (`RouterStateTools`). Add a *typed write* tool only when schema validation or
   safety on a specific high-risk write clearly justifies the maintenance cost.
