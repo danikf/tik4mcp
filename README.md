@@ -97,10 +97,18 @@ Register tik4mcp as a stdio server. For Claude Desktop (`claude_desktop_config.j
 }
 ```
 
-A Claude Code **plugin bundle** is provided under [`plugin/`](plugin/) — the MCP config plus two
-skills: **`mikrotik-admin`** (general administration) and **`router-init`** (provision a brand-new /
-factory-reset router from scratch over the MAC layer — discover, connect, set up basics, create the
-first admin, then lock down the default `admin`).
+A Claude Code **plugin bundle** is provided under [`plugin/`](plugin/) — the MCP config plus a set of
+knowledge skills that carry RouterOS best-practices and link to the MikroTik docs
+(`manual.mikrotik.com`), driving the router through the guarded `mikrotik_command`:
+
+- **`mikrotik-admin`** — general administration, transports, inventory, and the global safety rules.
+- **`router-init`** — provision a brand-new / factory-reset router from scratch over the MAC layer
+  (discover, connect, set up basics, create the first admin, then lock down the default `admin`).
+- **`mikrotik-firewall`** — understand, audit, and safely change the firewall (filter/NAT/mangle/RAW,
+  connection state, recommended baseline ruleset, lockout-safe edits).
+- **`mikrotik-ip`** — IP addresses, ARP, routes, DNS client & cache server, DHCP client & server.
+- **`mikrotik-mangle-queue`** — traffic shaping/QoS: connection & packet marking, hierarchical queue
+  trees, and the right queue type (PCQ/HTB).
 
 ## Safety
 

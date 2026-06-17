@@ -68,14 +68,21 @@ Every write passes through `AccessPolicy.EnsureAllowed`. Every connection is bui
 - **Path allowlist/denylist** and per-router rate limiting.
 - **Backup-before-change** (`/system/backup` or export) + documented rollback.
 
-### M3 — Curated semantic surface (broaden)
-- Promote common domains to typed read/write tools using `tik4net.entities`. The prioritized,
-  demand-grounded object-type list — with which entities already exist in `tik4net.entities` vs the
-  gaps — is in [`native-entity-support.md`](native-entity-support.md).
-- Most P1 provisioning entities already ship in `tik4net.entities`; the highest-value gaps to close
-  are `/interface/list`(+member), `/ip/service`, `/system/clock`, `/system/ntp/client`, and
-  `/system/backup`+`/export`.
-- Schema-validated inputs per tool; clear read-vs-write separation.
+### M3 — Domain coverage: **skills first, native tools only where they earn it**
+Direction decided: rather than hand-code a typed C# tool per RouterOS object type, keep the server
+thin and put domain expertise in **knowledge skills** that drive the guarded `mikrotik_command` and
+link to the live docs at `manual.mikrotik.com`. An LLM already knows RouterOS syntax; it needs
+judgment + current facts, which skills deliver more cheaply and maintainably than code.
+
+- **Skills (done / ongoing):** `mikrotik-admin`, `router-init`, `mikrotik-firewall`, `mikrotik-ip`,
+  `mikrotik-mangle-queue`. Next candidates: wireless/CAPsMAN, VPN (WireGuard/IPsec/PPP), users &
+  services hardening, backup/upgrade.
+- **Native tools** stay limited to: the guarded raw command, discovery, inventory, and a few
+  read conveniences (`RouterStateTools`). Add a *typed write* tool only when schema validation or
+  safety on a specific high-risk write clearly justifies the maintenance cost.
+- The prioritized, demand-grounded object-type list (and the `tik4net.entities`-exists-vs-gap audit)
+  in [`native-entity-support.md`](native-entity-support.md) now serves mainly to guide **skill
+  coverage** and to spot the rare object that warrants a native tool.
 
 ### M4 — Remote transport & deployment
 - HTTP/SSE (streamable HTTP) transport for a centrally hosted, multi-user service.
