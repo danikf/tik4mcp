@@ -140,15 +140,23 @@ the gaps marked ⚠️ are what to add or drive via raw command first):
 `/system/clock`, `/system/ntp/client`, `/system/backup`+`/export`. Everything else in the flow already
 has a typed entity in `tik4net.entities`.
 
-## C. Common tik4net feature questions / pain points (from the issue tracker)
+## C. Common tik4net feature questions / pain points (issue tracker + MikroTik forum)
 
 - **Connection stability** — "Can not read sentence from connection" recurs (issues #61, #82, #83); reboot/shutdown causes `IOException` (#100). tik4mcp should surface clean errors and not leak these.
 - **RouterOS 7 support** — explicit requests (#101 "Support routerOS 7?", #103 v7.18 `!empty` response). Field/path drift between ROS 6 and 7 affects typed entities.
-- **v6.43+ login** — historical auth confusion (#63, #64); confirm the alpha uses the new scheme (it does).
+- **v6.43+ / v6.45 login** — historical auth confusion (#63, #64; forum: `Api` vs the old `Api_v2`). The alpha uses the new scheme.
+- **Duplicate fields in a response** — forum: `/ip/ipsec/remote-peers/print` throws on multiple `port` fields (`local-port`/`remote-port`); workaround is `.proplist`. Also #51/#56. Semantic tools must tolerate repeated keys.
 - **Enum/format parsing** — multi-flag enums and values like `established,related,untracked` threw `FormatException` (#94, #79); firewall `protocol=tcp` issue (#52). Be defensive when echoing entity values.
+- **API stricter than the terminal** — forum: a slightly wrong path (`remote-peer` vs `remote-peers`) yields "no such command prefix"; users also struggle with filter syntax (`?src-address=`, stack ops `?#|`). The raw tool should pass paths through verbatim and document filter form.
+- **SSL/API onboarding** — forum: port 8728 refused when the `api` service is disabled, and `ApiSsl` cert validation failures. Mirrors the `router-init` "enable api + switch transport" step.
 - **`.id` / find semantics** — "Get id of any object" (#95), ID numbering (#71), find without `.id` (#66). The raw tool already exposes `.id`; semantic tools should too.
-- **Missing entities** — interface lists (#85), and (per the entity audit) `/ip/service`, `/system/ntp`, `/interface/wifi`, IPsec, OSPF are not yet typed.
+- **Missing entities** — interface lists (#85), hotspot ip-binding (forum, since added); and per the entity audit `/ip/service`, `/system/ntp`, `/interface/wifi`, IPsec, OSPF are not yet typed.
 - **Async / listen** — `LoadAsync` with listen/follow (#88); note REST/CLI/WinBox transports don't support Listen/Streaming.
+
+> **Forum signal strongly validates phase-1.** Multiple forum posts wanted **MAC-Telnet** access and
+> noted "resetting routers requires workarounds since MAC-telnet lacks .NET support" — exactly the
+> IP-less provisioning/recovery gap that tik4net 4.x's MAC transports and the `router-init` skill now
+> close. `/ip/ipsec/remote-peers` (read) and `/ip/hotspot/ip-binding` also surface as real demand.
 
 ## D. Sources
 
@@ -158,8 +166,14 @@ has a typed entity in `tik4net.entities`.
   [github.com/danikf/tik4net/issues](https://github.com/danikf/tik4net/issues) ·
   [issues.ecosyste.ms mirror](https://issues.ecosyste.ms/hosts/GitHub/repositories/danikf/tik4net/issues)
 - WireGuard support: [tik4net wiki History](https://github.com/danikf/tik4net/wiki/History) (WireguardInterface/WireguardPeer)
-- MikroTik forum tik4net thread: [forum.mikrotik.com/viewtopic.php?t=99954](https://forum.mikrotik.com/viewtopic.php?t=99954)
+- MikroTik forum tik4net thread (read pages 1 + 6 for demand & pain points):
+  [forum.mikrotik.com/viewtopic.php?t=99954](https://forum.mikrotik.com/viewtopic.php?t=99954) ·
+  [page 6](https://forum.mikrotik.com/t/c-api-tik4net-on-github/90879?page=6)
 - Usage / CRUD: [tik4net wiki](https://github.com/danikf/tik4net/wiki)
+- **Stack Overflow: could not be retrieved.** `stackoverflow.com` is blocked for Anthropic's web
+  crawler (HTTP 400 on both fetch and search), so SO threads tagged `mikrotik`/`routeros`/`tik4net`
+  were not directly inspected. Re-check manually if you want SO-specific demand signal; the forum +
+  issue tracker already cover the same recurring topics (firewall, DHCP, hotspot, IPsec, login, SSL).
 
 > Note: the ✅/⚠️ split was verified against the live `tik4net.objects` tree on `master`. Before
 > building native tools, re-check the alpha branch in case new entities (e.g. `/interface/wifi`) have
