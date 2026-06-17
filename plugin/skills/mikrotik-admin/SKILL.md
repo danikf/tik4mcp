@@ -65,3 +65,10 @@ tools over shelling out; they handle transports, the router inventory, and safet
 `Api` (default), `ApiSsl`, `Rest`, `RestSsl`, `Telnet`, `MacTelnet`, `WinboxCli`, `WinboxCliMac`,
 `WinboxNative`. Use `MacTelnet`/`WinboxCliMac` (with a MAC from `mikrotik_discover`) to reach a router
 that has no IP — useful for recovery and bootstrap.
+
+Call **`mikrotik_connection_info`** when you need to choose a transport or figure out what to enable on
+the router: it lists each transport's features (which transports can run `mikrotik_safe_batch` — i.e.
+support Safe Mode), whether an IP is required, and the RouterOS service/port each one needs. Pass a
+`router`/`host` and it also reports that router's current `/ip/service` state, so you can see which
+transports will actually connect. Remember: an IP transport is unreachable until the router has an IP
+and the service is enabled and allowed; MAC transports need neither.

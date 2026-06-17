@@ -44,7 +44,9 @@ public sealed class SafeBatchTools
         "Requires a session transport (Api, ApiSsl, Telnet, MacTelnet, WinboxCli, WinboxCliMac, WinboxNative); REST cannot hold Safe Mode. " +
         "Writes are refused unless the router is writable. NOTE: Safe Mode reverts CONFIGURATION only — it does not undo " +
         "reboots, upgrades, resets, or file operations; keep those out of a batch. " +
-        "Returns a JSON object with overall status, whether changes were committed, and each step's result.")]
+        "Returns a JSON object with overall status, whether changes were committed, a top-level 'error' " +
+        "summarizing the failing step (null on success), and a per-step 'steps' array carrying every " +
+        "successful line's response plus the failing line's TRAP/error — so you can detect and fix what broke.")]
     public string SafeBatch(
         [Description("Inventory router name to target. Omit when using ad-hoc host/username/password.")] string? router = null,
         [Description("Ordered steps to run in one Safe Mode transaction. Each: { command, parameters? }.")] SafeBatchStep[]? steps = null,
@@ -88,6 +90,7 @@ public sealed class SafeBatchTools
             var results = new List<Dictionary<string, object>>(steps.Length);
             var failed = false;
             var failedIndex = -1;
+            string? failMessage = null;
 
             for (var i = 0; i < steps.Length; i++)
             {
@@ -128,6 +131,7 @@ public sealed class SafeBatchTools
                 {
                     failed = true;
                     failedIndex = i;
+                    failMessage = $"step {i} ({step.Command}): {result}";
                     break;
                 }
             }
@@ -156,13 +160,17 @@ public sealed class SafeBatchTools
                 status = "dry-run-reverted";
             }
 
-            return TikResultFormatter.ToJson(new Dictionary<string, object>
+            return TikResultFormatter.ToJson(new Dictionary<string, object?>
             {
                 ["status"] = status,
                 ["committed"] = committed,
                 ["stepsRun"] = results.Count,
                 ["stepsTotal"] = steps.Length,
                 ["failedStep"] = failedIndex,
+                // Concise top-level error (null on success): the failing step + its TRAP/error line.
+                // The per-step 'steps' array carries every successful line's response plus the error line,
+                // so the caller can see exactly what applied (then rolled back) and what failed.
+                ["error"] = failMessage,
                 ["steps"] = results,
             });
         }

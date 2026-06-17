@@ -14,12 +14,23 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole(o => o.LogToStandardErrorThreshold = LogLevel.Trace);
 builder.Logging.SetMinimumLevel(LogLevel.Information);
 
-// Configuration: appsettings.json (inventory, non-secret) overlaid by TIK4MCP_-prefixed env vars
-// (credentials). E.g. TIK4MCP_Routers__core__Password=secret, TIK4MCP_ReadOnly=false.
-builder.Configuration.AddEnvironmentVariables("TIK4MCP_");
+// Configuration: appsettings.json holds the (non-secret) inventory under the "Tik4Mcp" section.
+// TIK4MCP_-prefixed environment variables overlay it for secrets/overrides — and the part AFTER the
+// prefix maps straight onto the options, so the documented short form works:
+//   TIK4MCP_ReadOnly=false
+//   TIK4MCP_Routers__core__ReadOnly=false
+//   TIK4MCP_Routers__core__Password=secret
+// (We bind the section first, then overlay only the TIK4MCP_-prefixed vars — built as an isolated
+// source so unrelated machine environment variables can never leak into the options.)
+var envOverrides = new ConfigurationBuilder()
+    .AddEnvironmentVariables(prefix: "TIK4MCP_")
+    .Build();
 
-builder.Services.Configure<Tik4McpOptions>(
-    builder.Configuration.GetSection(Tik4McpOptions.SectionName));
+builder.Services.Configure<Tik4McpOptions>(options =>
+{
+    builder.Configuration.GetSection(Tik4McpOptions.SectionName).Bind(options);
+    envOverrides.Bind(options);
+});
 
 builder.Services.AddSingleton<AccessPolicy>();
 builder.Services.AddSingleton<ConnectionResolver>();
@@ -31,6 +42,7 @@ builder.Services
     .WithTools<SafeBatchTools>()
     .WithTools<SystemTools>()
     .WithTools<DiscoveryTools>()
-    .WithTools<InventoryTools>();
+    .WithTools<InventoryTools>()
+    .WithTools<ConnectionInfoTools>();
 
 await builder.Build().RunAsync();

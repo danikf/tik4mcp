@@ -53,10 +53,12 @@ Two chokepoints everything funnels through — preserve this when adding feature
 
 ### Configuration & secrets
 
-Bound from `appsettings.json` section `Tik4Mcp` (`Tik4McpOptions.SectionName`), overlaid by
-`TIK4MCP_`-prefixed environment variables (`builder.Configuration.AddEnvironmentVariables("TIK4MCP_")`).
-The `Routers` inventory is a **dictionary keyed by logical name**, so a secret overrides cleanly as
-`TIK4MCP_Routers__<name>__Password`. **Never commit real credentials to appsettings.json.**
+Bound in `Program.cs` by binding the `appsettings.json` section `Tik4Mcp` (`Tik4McpOptions.SectionName`)
+first, then overlaying an **isolated** `TIK4MCP_`-prefixed environment-variable source onto the same
+options. The part *after* the prefix maps straight onto the options, so the documented short form binds:
+`TIK4MCP_ReadOnly`, `TIK4MCP_Routers__<name>__Password`, `TIK4MCP_Routers__<name>__ReadOnly`, … (the
+prefixed source is built separately so unrelated machine env vars can't leak in). The `Routers`
+inventory is a **dictionary keyed by logical name**. **Never commit real credentials to appsettings.json.**
 
 ### Adding a tool
 
@@ -86,8 +88,8 @@ Shipped both as a dotnet tool (`tik4mcp`) and as a **Claude Code plugin** under 
 descriptions and the skills' guidance in sync with the actual tools in `src/`.
 
 **Design direction — skills over native tools.** The strategic bet is a *thin server*
-(one guarded `mikrotik_command`, the Safe Mode transaction tool `mikrotik_safe_batch`, plus
-safety/inventory/discovery + a few read conveniences) plus *rich
+(one guarded `mikrotik_command`, the Safe Mode transaction tool `mikrotik_safe_batch`, the transport
+reference `mikrotik_connection_info`, plus safety/inventory/discovery + a few read conveniences) plus *rich
 skills* that carry RouterOS best-practices and link to the live docs at `manual.mikrotik.com` (the
 old `help.mikrotik.com`/`wiki.mikrotik.com` are frozen). An LLM already knows RouterOS API syntax;
 what it needs is domain judgment and current facts — cheaper and more maintainable to put in skills

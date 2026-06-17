@@ -125,5 +125,7 @@ Capture a provisioning baseline for future diffing: `/export` (and/or `/system/b
 ## Transport quick reference
 
 `WinboxCliMac` / `MacTelnet` → reach a router with **no IP** (provisioning, recovery). `Api` /
-`ApiSsl` → stable day-to-day management once IP is up. See the `mikrotik-admin` skill for the full
-tool surface and the general safety rules.
+`ApiSsl` → stable day-to-day management once IP is up. Call **`mikrotik_connection_info`** for the full
+matrix — each transport's features, whether it needs an IP, and which `/ip/service` (and port) to
+enable; pass the router to also see which services are currently on. See the `mikrotik-admin` skill for
+the full tool surface and the general safety rules.

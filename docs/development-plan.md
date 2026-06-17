@@ -42,9 +42,14 @@ Every write passes through `AccessPolicy.EnsureAllowed`. Every connection is bui
 - Solution, server project, tik4net alpha reference, MIT license, README, dev plan.
 - DI host with stdio transport; configuration binding (appsettings + env override).
 - `ConnectionResolver` covering all in-core transports; `AccessPolicy` read-only guardrail.
-- Tools (6): inventory `mikrotik_list_routers`; discovery `mikrotik_discover`; curated read
-  conveniences `mikrotik_system_overview` and `mikrotik_logs`; the guarded raw `mikrotik_command`; and
-  the Safe Mode transaction tool `mikrotik_safe_batch`.
+- Tools (7): inventory `mikrotik_list_routers`; discovery `mikrotik_discover`; transport reference
+  `mikrotik_connection_info` (per-transport features read live from tik4net + RouterOS service/port
+  requirements + optional live `/ip/service` state); curated read conveniences `mikrotik_system_overview`
+  and `mikrotik_logs`; the guarded raw `mikrotik_command`; and the Safe Mode transaction tool
+  `mikrotik_safe_batch`.
+- Config binding: `appsettings.json` `Tik4Mcp` section, then an isolated `TIK4MCP_`-prefixed env source
+  overlaid onto the options — so the documented short form (`TIK4MCP_Routers__<name>__Password`,
+  `TIK4MCP_ReadOnly`) binds, without leaking unrelated machine env vars.
   > **History:** M0 originally shipped 14 tools including ten 1:1 read passthroughs (`mikrotik_interfaces`,
   > `mikrotik_ip_addresses`, `mikrotik_routes`, `mikrotik_arp`, `mikrotik_queues`, `mikrotik_ppp`,
   > `mikrotik_users`, `mikrotik_hotspot`, `mikrotik_wireless`). These were **removed** once `mikrotik_safe_batch`
@@ -131,8 +136,9 @@ judgment + current facts, which skills deliver more cheaply and maintainably tha
 
 - **`mikrotik_command` raw trace toggle** — port the `includeRawTrace` option from the dev tool for
   protocol-level debugging from within an agent session.
-- **Connectivity probe tool** — given a host/MAC, report which transports succeed (API/REST/WinBox/…),
-  useful for onboarding a new router.
+- **Connectivity probe tool** — `mikrotik_connection_info` now covers the *descriptive* half (per-transport
+  features + which RouterOS service/port each needs + optional live `/ip/service` state). A future
+  enhancement could *actively* probe a host/MAC and report which transports actually succeed.
 - **Safe Mode integration** — ✅ done via `mikrotik_safe_batch` (see M2): risky write batches run in
   RouterOS Safe Mode so a lost connection or any failed step auto-rolls-back.
 - **Config export/snapshot tool** — `/export` to a stored artifact for diffing and change review.

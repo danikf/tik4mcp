@@ -38,6 +38,7 @@ for connecting AI agents to real routers for ops, diagnostics, and automation.
 |---|---|
 | `mikrotik_list_routers` | List configured routers (no secrets) and server policy. |
 | `mikrotik_discover` | MNDP discovery of routers on the local network. |
+| `mikrotik_connection_info` | Transport reference: per-transport features (incl. Safe Mode), whether an IP is needed, and which RouterOS service/port to enable; optionally reports a router's current `/ip/service` state. |
 | `mikrotik_system_overview` | Identity + resource (CPU/mem/uptime) + routerboard in one call. |
 | `mikrotik_logs` | Most recent log entries. |
 | `mikrotik_command` | Run any RouterOS API command over any transport (guarded; the path for all reads not covered above and all writes). |
