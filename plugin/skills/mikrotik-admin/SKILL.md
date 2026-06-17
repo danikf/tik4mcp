@@ -14,10 +14,14 @@ tools over shelling out; they handle transports, the router inventory, and safet
    configured inventory (names, hosts, transport, writability). To find routers on the local network,
    use `mikrotik_discover` (MNDP — works even without an IP route).
 2. **Read before you write.** For common questions use the curated read tools first:
-   `mikrotik_system_overview`, `mikrotik_interfaces`, `mikrotik_ip_addresses`, `mikrotik_logs`.
-3. **Use `mikrotik_command` for everything else.** Pass the RouterOS API path (e.g.
-   `/ip/firewall/filter/print`) and API-form parameters: filters as `?name=value`, name-value words
-   as `=name=value`. Target by inventory `router` name, or ad-hoc `host`/`username`/`password`.
+   `mikrotik_system_overview`, `mikrotik_interfaces`, `mikrotik_ip_addresses`, `mikrotik_routes`,
+   `mikrotik_arp`, `mikrotik_queues` (`kind`), `mikrotik_ppp` (`section`), `mikrotik_users`
+   (`section`), `mikrotik_hotspot` (`section`), `mikrotik_wireless` (`section`), `mikrotik_logs`.
+3. **Use `mikrotik_command` for everything else, and for all writes.** The curated tools above are
+   read-only; to create/modify/delete (routes, queues, PPP secrets, users, hotspot, wireless, …) call
+   `mikrotik_command` with the RouterOS API path (e.g. `/ppp/secret/add`) and API-form parameters:
+   filters as `?name=value`, name-value words as `=name=value`. Target by inventory `router` name, or
+   ad-hoc `host`/`username`/`password`.
 
 ## Safety rules
 

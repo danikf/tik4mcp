@@ -41,8 +41,15 @@ for connecting AI agents to real routers for ops, diagnostics, and automation.
 | `mikrotik_system_overview` | Identity + resource (CPU/mem/uptime) + routerboard. |
 | `mikrotik_interfaces` | Interface list with state and counters. |
 | `mikrotik_ip_addresses` | Configured IPv4 addresses. |
+| `mikrotik_routes` | IPv4 routing table. |
+| `mikrotik_arp` | IPv4 ARP table. |
+| `mikrotik_queues` | Traffic queues — `kind`: simple / tree / type. |
+| `mikrotik_ppp` | PPP (PPPoE/VPN) — `section`: secret / profile / active. |
+| `mikrotik_users` | Login accounts & rights — `section`: users / groups. |
+| `mikrotik_hotspot` | Hotspot — `section`: users / profiles / active / bindings. |
+| `mikrotik_wireless` | Legacy WLAN — `section`: interfaces / security / registration. |
 | `mikrotik_logs` | Most recent log entries. |
-| `mikrotik_command` | Run any RouterOS API command over any transport (guarded). |
+| `mikrotik_command` | Run any RouterOS API command over any transport (guarded; the path for all writes). |
 
 ## Quick start
 

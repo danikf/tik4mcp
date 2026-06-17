@@ -29,6 +29,7 @@ builder.Services
     .WithStdioServerTransport()
     .WithTools<RouterCommandTools>()
     .WithTools<SystemTools>()
+    .WithTools<RouterStateTools>()
     .WithTools<DiscoveryTools>()
     .WithTools<InventoryTools>();
 

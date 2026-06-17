@@ -42,9 +42,15 @@ Every write passes through `AccessPolicy.EnsureAllowed`. Every connection is bui
 - Solution, server project, tik4net alpha reference, MIT license, README, dev plan.
 - DI host with stdio transport; configuration binding (appsettings + env override).
 - `ConnectionResolver` covering all in-core transports; `AccessPolicy` read-only guardrail.
-- Tools: `mikrotik_list_routers`, `mikrotik_discover`, `mikrotik_system_overview`,
-  `mikrotik_interfaces`, `mikrotik_ip_addresses`, `mikrotik_logs`, `mikrotik_command`.
-- Claude Code plugin bundle (`plugin/`) with skill + `.mcp.json`.
+- Tools (14): inventory `mikrotik_list_routers`; discovery `mikrotik_discover`; curated read tools
+  `mikrotik_system_overview`, `mikrotik_interfaces`, `mikrotik_ip_addresses`, `mikrotik_routes`,
+  `mikrotik_arp`, `mikrotik_queues`, `mikrotik_ppp`, `mikrotik_users`, `mikrotik_hotspot`,
+  `mikrotik_wireless`, `mikrotik_logs`; and the guarded raw `mikrotik_command` (the path for all writes).
+- Claude Code plugin bundle (`plugin/`) with `mikrotik-admin` + `router-init` skills + `.mcp.json`.
+
+> Read coverage for the requested object types (IP, routes, ARP, queues/tree, PPP, users & rights,
+> hotspot users/profiles, WLAN interfaces & security) is in place via the curated tools above; **typed
+> write tools** for these remain M3 (writes work today through `mikrotik_command`).
 
 ### M1 — Hardening & tests
 - Unit tests against `tik4net.testing` `TikFakeConnection` (no live router): policy classification,
