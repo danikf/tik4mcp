@@ -109,6 +109,8 @@ knowledge skills that carry RouterOS best-practices and link to the MikroTik doc
 - **`mikrotik-ip`** — IP addresses, ARP, routes, DNS client & cache server, DHCP client & server.
 - **`mikrotik-mangle-queue`** — traffic shaping/QoS: connection & packet marking, hierarchical queue
   trees, and the right queue type (PCQ/HTB).
+- **`mikrotik-home-wifi`** — home Wi-Fi: virtual WLANs (multiple SSIDs), an isolated guest network,
+  and a kids WLAN with forced family-safe DNS and a scheduler-driven internet curfew.
 
 ## Safety
 
