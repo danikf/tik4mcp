@@ -90,8 +90,8 @@ Tiers: **P1** must-have · **P2** common · **P3** advanced/niche.
 | Path | tik4net entity | Demand signal | Tier |
 |---|---|---|---|
 | `/interface/wireguard` (+ peers) | ✅ `InterfaceWireguard` + `WireguardPeer` | Top current VPN demand (issue #92 / PR) | **P1** |
-| `/ppp/secret` | ✅ `PppSecret` | PPPoE/L2TP user store — requested (#73, #84) | P2 |
-| `/ppp/profile`, `/ppp/active` | ✅ `PppProfile`/`PppActive` | Remote-access VPN | P2 |
+| `/ppp/secret` | ✅ `PppSecret` | PPPoE/L2TP user store — requested (#73, #84; SO Q48160658 "add profile and user") | P2 |
+| `/ppp/profile`, `/ppp/active` | ✅ `PppProfile`/`PppActive` | Remote-access VPN; PPPoE-server user provisioning (profile + secret) is a recurring ISP ask | P2 |
 | `/ip/ipsec/*` | ⚠️ gap | Site-to-site | P2 |
 | `/interface/l2tp-server`, `/interface/ovpn-server` | ⚠️ gap | Remote access / OpenVPN | P3 |
 
@@ -171,9 +171,12 @@ has a typed entity in `tik4net.entities`.
   [page 6](https://forum.mikrotik.com/t/c-api-tik4net-on-github/90879?page=6)
 - Usage / CRUD: [tik4net wiki](https://github.com/danikf/tik4net/wiki)
 - **Stack Overflow: could not be retrieved.** `stackoverflow.com` is blocked for Anthropic's web
-  crawler (HTTP 400 on both fetch and search), so SO threads tagged `mikrotik`/`routeros`/`tik4net`
-  were not directly inspected. Re-check manually if you want SO-specific demand signal; the forum +
-  issue tracker already cover the same recurring topics (firewall, DHCP, hotspot, IPsec, login, SSL).
+  crawler (HTTP 400 / "unable to fetch" on both fetch and search), so SO answer bodies were not
+  directly inspected. One question was supplied directly —
+  [SO Q48160658 "How to add profile and user in mikrotik by tik4net"](https://stackoverflow.com/questions/48160658/how-to-add-profile-and-user-in-mikrotk-by-tik4net)
+  — its **title** confirms demand for PPP profile + secret provisioning (corroborated by the forum and
+  issues #73/#84), but the code/accepted answer could not be read. The forum + issue tracker already
+  cover the same recurring topics (firewall, DHCP, hotspot, IPsec, PPP, login, SSL).
 
 > Note: the ✅/⚠️ split was verified against the live `tik4net.objects` tree on `master`. Before
 > building native tools, re-check the alpha branch in case new entities (e.g. `/interface/wifi`) have
