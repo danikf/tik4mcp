@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Tik4Mcp.Server/Tik4Mcp.Server.csproj" />
+  </Folder>
+</Solution>

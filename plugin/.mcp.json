@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "tik4mcp": {
+      "command": "tik4mcp",
+      "args": [],
+      "env": {}
+    }
+  }
+}

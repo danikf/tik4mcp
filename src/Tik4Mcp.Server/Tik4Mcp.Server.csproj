@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>tik4mcp</AssemblyName>
+    <RootNamespace>Tik4Mcp.Server</RootNamespace>
+
+    <!-- Pack as a .NET tool: `dotnet tool install -g tik4mcp` -> `tik4mcp` on PATH. -->
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>tik4mcp</ToolCommandName>
+    <PackageId>tik4mcp</PackageId>
+    <Description>MCP (Model Context Protocol) server that lets AI assistants administer MikroTik routers via tik4net — over every transport (API/REST/Telnet/MAC-Telnet/WinBox CLI/WinBox native), with a router inventory, read-only-by-default guardrails, MNDP discovery, and curated semantic tools.</Description>
+    <PackageTags>Mikrotik MCP ModelContextProtocol AI Claude RouterOS tik4net network admin</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Sample inventory is shipped alongside the tool; real credentials come from env vars. -->
+    <None Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ModelContextProtocol" Version="0.3.*" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.*" />
+
+    <!-- Core tik4net brings every transport (API/REST/Telnet/MAC-Telnet/WinBox*) + MNDP. -->
+    <PackageReference Include="tik4net" Version="$(Tik4NetVersion)" />
+  </ItemGroup>
+</Project>

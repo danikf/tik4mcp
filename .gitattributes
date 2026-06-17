@@ -1,0 +1,11 @@
+# Normalize line endings: let Git handle EOL, checkout native.
+* text=auto
+
+# Force LF for these regardless of platform
+*.cs text eol=lf
+*.csproj text eol=lf
+*.props text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.slnx text eol=lf
+*.sln text eol=crlf

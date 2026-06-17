@@ -1,0 +1,12 @@
+{
+  "name": "tik4mcp",
+  "version": "0.1.0-alpha",
+  "description": "Administer MikroTik routers from AI: connect over every tik4net transport (API/REST/Telnet/MAC-Telnet/WinBox), discover via MNDP, and read or modify router state with read-only-by-default guardrails.",
+  "author": {
+    "name": "Daniel Frantik"
+  },
+  "homepage": "https://github.com/danikf/tik4mcp",
+  "repository": "https://github.com/danikf/tik4mcp",
+  "license": "MIT",
+  "keywords": ["mikrotik", "routeros", "network", "mcp", "tik4net"]
+}

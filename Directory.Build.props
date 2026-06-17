@@ -1,0 +1,25 @@
+<Project>
+  <!-- Shared metadata and build settings for every project in the tik4mcp solution. -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+
+    <!-- tik4mcp versions independently from tik4net; bump here for all projects. -->
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <VersionSuffix>alpha</VersionSuffix>
+
+    <Authors>Daniel Frantik</Authors>
+    <Company>Daniel Frantik</Company>
+    <Copyright>Copyright (C) Daniel Frantik 2026</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/danikf/tik4mcp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/danikf/tik4mcp</PackageProjectUrl>
+
+    <!-- The tik4net alpha line this server is built and tested against. -->
+    <Tik4NetVersion>4.0.0-alpha</Tik4NetVersion>
+  </PropertyGroup>
+</Project>
