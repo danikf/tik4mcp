@@ -75,8 +75,8 @@ link to the live docs at `manual.mikrotik.com`. An LLM already knows RouterOS sy
 judgment + current facts, which skills deliver more cheaply and maintainably than code.
 
 - **Skills (done / ongoing):** `mikrotik-admin`, `router-init`, `mikrotik-firewall`, `mikrotik-ip`,
-  `mikrotik-mangle-queue`, `mikrotik-home-wifi`. Next candidates: VPN (WireGuard/IPsec/PPP), CAPsMAN
-  multi-AP, users & services hardening, backup/upgrade.
+  `mikrotik-mangle-queue`, `mikrotik-home-wifi`, `mikrotik-vpn`. Next candidates: CAPsMAN multi-AP,
+  users & services hardening, backup/upgrade, monitoring/netwatch.
 - **Native tools** stay limited to: the guarded raw command, discovery, inventory, and a few
   read conveniences (`RouterStateTools`). Add a *typed write* tool only when schema validation or
   safety on a specific high-risk write clearly justifies the maintenance cost.

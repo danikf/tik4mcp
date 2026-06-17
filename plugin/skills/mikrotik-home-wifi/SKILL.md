@@ -1,6 +1,6 @@
 ---
 name: mikrotik-home-wifi
-description: Build a home Wi-Fi setup on MikroTik via tik4mcp — multiple/virtual WLANs (SSIDs), an isolated guest network, and a kids/child WLAN with parental controls (forced family-safe DNS like OpenDNS FamilyShield or Cloudflare for Families) plus time-based internet curfews via the scheduler. Use when the user wants several SSIDs, a guest network, parental controls, safe DNS, or scheduled (time-based) access on a home router.
+description: Build a home Wi-Fi setup on MikroTik via tik4mcp — multiple/virtual WLANs (SSIDs), an isolated guest network, and a kids/child WLAN with parental controls (forced family-safe DNS like OpenDNS FamilyShield or Cloudflare for Families) plus time-based internet curfews using firewall time rules. Use when the user wants several SSIDs, a guest network, parental controls, safe DNS, or time-based access on a home router.
 ---
 
 # MikroTik home Wi-Fi — virtual WLANs, guest, and parental controls
@@ -84,20 +84,42 @@ Redirect UDP and TCP 53:
 > kids subnet, and optionally maintain a drop `address-list` of known DoH endpoints. It's best-effort,
 > not absolute — set expectations honestly.
 
-### Time-based internet curfew (scheduler-driven, version-safe)
+### Time-based internet curfew (firewall `time` matcher — preferred)
 
-The old RouterOS 6 firewall `time` matcher is unreliable/removed on v7 — use the **scheduler** to flip
-a drop rule instead (works on all versions). Create the rule disabled, then toggle it by `comment`:
+Use **static** firewall rules with the `time` matcher: one accept for workdays, one for days off, then
+a drop. The rules are written **once** and the matching happens at runtime — so there are **no
+recurring flash writes** (see the warning below). This is the recommended home setup and the most
+common real-world pattern.
 
-1. `/ip/firewall/filter/add` · `=chain=forward` · `=src-address=192.168.20.0/24` ·
-   `=out-interface-list=WAN` · `=action=drop` · `=comment=kids-curfew` · `=disabled=yes`
-2. Curfew **on** at 21:00: `/system/scheduler/add` · `=name=kids-curfew-on` · `=start-time=21:00:00` ·
-   `=interval=1d` · `=on-event=/ip/firewall/filter set [find comment=kids-curfew] disabled=no`
-3. Curfew **off** at 07:00: `/system/scheduler/add` · `=name=kids-curfew-off` · `=start-time=07:00:00` ·
-   `=interval=1d` · `=on-event=/ip/firewall/filter set [find comment=kids-curfew] disabled=yes`
+1. Allow on workdays, e.g. 15:00–20:00 Mon–Fri:
+   `/ip/firewall/filter/add` · `=chain=forward` · `=src-address=192.168.20.0/24` ·
+   `=out-interface-list=WAN` · `=action=accept` · `=time=15:00:00-20:00:00,mon,tue,wed,thu,fri` ·
+   `=comment=kids-allow-workday`
+2. Allow wider on days off, e.g. 09:00–21:00 Sat–Sun:
+   `/ip/firewall/filter/add` · `=chain=forward` · `=src-address=192.168.20.0/24` ·
+   `=out-interface-list=WAN` · `=action=accept` · `=time=09:00:00-21:00:00,sat,sun` ·
+   `=comment=kids-allow-dayoff`
+3. Drop the rest for the kids subnet:
+   `/ip/firewall/filter/add` · `=chain=forward` · `=src-address=192.168.20.0/24` ·
+   `=out-interface-list=WAN` · `=action=drop` · `=comment=kids-block`
 
-Place the drop rule **before** any general LAN→WAN accept (order matters — see `mikrotik-firewall`).
-For per-day schedules, add separate scheduler entries or check the weekday in an `on-event` script.
+Ordering: the two accepts must come **before** the drop, and the drop is specific to the kids subnet
+(don't rely on the global drop) — see `mikrotik-firewall`. The `time` matcher uses the router's
+**local clock**, so NTP and timezone must be correct (see `mikrotik-ip`). To make the curfew also cut
+*existing* sessions, keep this drop ahead of any blanket established/related accept for the kids
+subnet; otherwise long-lived connections age out on their own.
+
+> **`time` matcher availability:** it's a real, long-standing RouterOS matcher (and the low-wear way to
+> do this), but it is underdocumented and its presence has varied across RouterOS 7 builds. Verify on
+> the target — if `/ip/firewall/filter add ... time=...` is rejected, upgrade RouterOS; only as a last
+> resort fall back to a scheduler, accepting the flash-wear cost below.
+
+> ⚠️ **Don't use the scheduler to toggle rules daily — it wears the flash.** Flipping a rule's
+> `disabled` flag (or add/remove) from `/system/scheduler` **writes the configuration to the router's
+> flash every time it runs**. Twice a day for years is thousands of extra writes that wear the
+> NAND/flash and can eventually kill a small router. Prefer the static `time`-matcher rules above
+> (written once). Reserve the scheduler for genuinely infrequent jobs (a nightly backup, an occasional
+> reboot), not recurring config rewrites.
 
 ## Guest WLAN isolation (firewall)
 

@@ -110,7 +110,9 @@ knowledge skills that carry RouterOS best-practices and link to the MikroTik doc
 - **`mikrotik-mangle-queue`** — traffic shaping/QoS: connection & packet marking, hierarchical queue
   trees, and the right queue type (PCQ/HTB).
 - **`mikrotik-home-wifi`** — home Wi-Fi: virtual WLANs (multiple SSIDs), an isolated guest network,
-  and a kids WLAN with forced family-safe DNS and a scheduler-driven internet curfew.
+  and a kids WLAN with forced family-safe DNS and a `time`-matcher internet curfew (no flash wear).
+- **`mikrotik-vpn`** — WireGuard (road-warrior & site-to-site), L2TP/IPsec for native OS clients,
+  IPsec site-to-site, and the firewall/routing to make them work.
 
 ## Safety
 

@@ -32,6 +32,11 @@ tools over shelling out; they handle transports, the router inventory, and safet
 - Never paste router passwords into chat. Routers are referenced by inventory name; credentials live
   in the server's environment.
 - When a write is rejected by policy, explain that the router is read-only rather than retrying.
+- **Protect the router's flash — avoid recurring config writes.** Every config change (including a
+  `/system/scheduler` job that flips a rule's `disabled` flag or add/removes objects) is persisted to
+  the router's NAND/flash; doing it on a frequent schedule wears the storage and can eventually kill a
+  small device. For time-of-day behaviour prefer **static rules with the firewall `time` matcher**
+  over scheduler-toggled rules. Reserve the scheduler for genuinely infrequent jobs.
 
 ## Transports
 
