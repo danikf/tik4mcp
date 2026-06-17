@@ -80,7 +80,14 @@ fix means publishing a new alpha and bumping `$(Tik4NetVersion)`. Key tik4net en
 ## Distribution
 
 Shipped both as a dotnet tool (`tik4mcp`) and as a **Claude Code plugin** under `plugin/`
-(`.claude-plugin/plugin.json`, `.mcp.json`, and the `mikrotik-admin` skill). Keep the plugin's tool
-descriptions and the skill's guidance in sync with the actual tools in `src/`.
+(`.claude-plugin/plugin.json`, `.mcp.json`, and two skills: `mikrotik-admin` for general admin and
+`router-init` for from-scratch provisioning over the MAC layer). Keep the plugin's tool descriptions
+and the skills' guidance in sync with the actual tools in `src/`.
 
-See `docs/development-plan.md` for the milestone roadmap and the locked v1 decisions.
+See `docs/development-plan.md` for the milestone roadmap and locked v1 decisions, and
+`docs/native-entity-support.md` for the prioritized, demand-grounded list of RouterOS object types to
+support natively (with the tik4net.entities-exists-vs-gap audit) — this drives M3 and phase-1.
+
+Note: the `router-init` flow needs the MAC-layer ad-hoc path in `ConnectionResolver` (host falls back
+to `routerMac` when only a MAC is supplied) and requires the server to run with writes enabled
+(`TIK4MCP_ReadOnly=false`).

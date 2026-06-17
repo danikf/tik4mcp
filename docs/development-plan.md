@@ -63,9 +63,12 @@ Every write passes through `AccessPolicy.EnsureAllowed`. Every connection is bui
 - **Backup-before-change** (`/system/backup` or export) + documented rollback.
 
 ### M3 — Curated semantic surface (broaden)
-- Promote common domains to typed read/write tools using `tik4net.entities`:
-  firewall (filter/nat/mangle), DHCP server/leases, routes, DNS, VPN (wireguard/ipsec/ppp),
-  interfaces (bridge/vlan/wireless), queues, users, scheduler, system (clock/ntp/backup/export).
+- Promote common domains to typed read/write tools using `tik4net.entities`. The prioritized,
+  demand-grounded object-type list — with which entities already exist in `tik4net.entities` vs the
+  gaps — is in [`native-entity-support.md`](native-entity-support.md).
+- Most P1 provisioning entities already ship in `tik4net.entities`; the highest-value gaps to close
+  are `/interface/list`(+member), `/ip/service`, `/system/clock`, `/system/ntp/client`, and
+  `/system/backup`+`/export`.
 - Schema-validated inputs per tool; clear read-vs-write separation.
 
 ### M4 — Remote transport & deployment

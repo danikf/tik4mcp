@@ -50,17 +50,21 @@ public sealed class ConnectionResolver
             if (!_options.AllowAdhoc)
                 throw new ArgumentException(
                     "Ad-hoc connections are disabled (Tik4Mcp:AllowAdhoc=false). Use a named router.");
-            if (string.IsNullOrWhiteSpace(host))
-                throw new ArgumentException("Provide either 'router' (an inventory name) or 'host' for an ad-hoc connection.");
+            // A factory/IP-less router is reached over the MAC layer — then only the MAC is needed.
+            // Fall back to the MAC as the host placeholder so MacTelnet/WinboxCliMac can connect.
+            var effectiveHost = string.IsNullOrWhiteSpace(host) ? routerMac : host;
+            if (string.IsNullOrWhiteSpace(effectiveHost))
+                throw new ArgumentException(
+                    "Provide 'router' (an inventory name), or 'host' for an IP connection, or 'routerMac' for a MAC-layer connection.");
 
             profile = new RouterProfile
             {
-                Host = host!,
+                Host = effectiveHost!,
                 User = user ?? "",
                 Password = password ?? "",
                 ReadOnly = true, // ad-hoc targets are always read-only unless globally writable
             };
-            routerLabel = host!;
+            routerLabel = effectiveHost!;
         }
 
         var transportName = transport ?? profile.Transport ?? _options.DefaultTransport;

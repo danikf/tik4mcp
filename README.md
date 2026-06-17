@@ -90,7 +90,10 @@ Register tik4mcp as a stdio server. For Claude Desktop (`claude_desktop_config.j
 }
 ```
 
-A Claude Code **plugin bundle** (skill + MCP config) is provided under [`plugin/`](plugin/).
+A Claude Code **plugin bundle** is provided under [`plugin/`](plugin/) — the MCP config plus two
+skills: **`mikrotik-admin`** (general administration) and **`router-init`** (provision a brand-new /
+factory-reset router from scratch over the MAC layer — discover, connect, set up basics, create the
+first admin, then lock down the default `admin`).
 
 ## Safety
 
@@ -101,8 +104,14 @@ least-privilege RouterOS account for the agent.
 
 ## Roadmap
 
-See [`docs/development-plan.md`](docs/development-plan.md) for the full milestone plan (remote
-HTTP/SSE transport, approval/dry-run workflow, MCP resources & prompts, more semantic tools, SSH).
+- [`docs/development-plan.md`](docs/development-plan.md) — full milestone plan (remote HTTP/SSE
+  transport, approval/dry-run workflow, MCP resources & prompts, more semantic tools, SSH).
+- [`docs/native-entity-support.md`](docs/native-entity-support.md) — prioritized, demand-grounded
+  list of RouterOS object types to support natively, including which already exist in
+  `tik4net.entities` and which are gaps.
+
+**Phase 1** focuses on provisioning a router from scratch (the `router-init` skill); see the entity
+doc for the minimal entity set it needs.
 
 ## License
 
