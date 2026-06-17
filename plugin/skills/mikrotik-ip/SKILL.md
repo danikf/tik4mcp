@@ -5,8 +5,8 @@ description: Understand and configure MikroTik RouterOS IP/L3 basics via tik4mcp
 
 # MikroTik IP / L3 essentials — addresses, ARP, routes, DNS, DHCP
 
-Drive everything through tik4mcp (`mikrotik_command` for reads and all writes; the curated read tools
-`mikrotik_ip_addresses`, `mikrotik_arp`, `mikrotik_routes` for quick looks). This skill carries the
+Drive everything through tik4mcp (`mikrotik_command` for reads and all writes — e.g.
+`/ip/address/print`, `/ip/arp/print`, `/ip/route/print`). This skill carries the
 logic and best practices; for exact field semantics and version specifics, prefer the MikroTik docs
 linked below over memory.
 
@@ -21,7 +21,7 @@ resolution) → `dhcp-server` (hand addresses/gateway/DNS to LAN clients). On th
 - Assign a LAN gateway IP to the bridge: `/ip/address/add` · `=address=192.168.88.1/24` ·
   `=interface=bridge-lan`. Always include the prefix (`/24`), and address the **bridge**, not member
   ports, on modern RouterOS.
-- Read: `mikrotik_ip_addresses` or `/ip/address/print`.
+- Read: `/ip/address/print`.
 
 ## ARP — `/ip/arp`
 
@@ -29,7 +29,7 @@ resolution) → `dhcp-server` (hand addresses/gateway/DNS to LAN clients). On th
   `arp=reply-only` and add **static** ARP entries (`/ip/arp/add` · `=address=` · `=mac-address=` ·
   `=interface=`) — often paired with static DHCP leases to pin a client to one MAC.
 - Other interface `arp` modes: `enabled` (default), `proxy-arp`, `local-proxy-arp`, `disabled`.
-- Read: `mikrotik_arp` or `/ip/arp/print`.
+- Read: `/ip/arp/print`.
 
 ## Routes — `/ip/route`
 
@@ -38,7 +38,7 @@ resolution) → `dhcp-server` (hand addresses/gateway/DNS to LAN clients). On th
   `=gateway=<next-hop>`.
 - `distance` picks the winner among routes to the same dst (lower wins); use it for failover.
   `check-gateway=ping` drops a route when its gateway goes down. Multiple equal-distance gateways = ECMP.
-- Read: `mikrotik_routes` or `/ip/route/print` (look at `dst-address`, `gateway`, `distance`,
+- Read: `/ip/route/print` (look at `dst-address`, `gateway`, `distance`,
   `active`/`dynamic` flags).
 
 ## DNS — `/ip/dns` (client *and* cache server)

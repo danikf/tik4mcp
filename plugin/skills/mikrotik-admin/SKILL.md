@@ -13,15 +13,14 @@ tools over shelling out; they handle transports, the router inventory, and safet
 1. **Find the target.** If the user names a router loosely, call `mikrotik_list_routers` to see the
    configured inventory (names, hosts, transport, writability). To find routers on the local network,
    use `mikrotik_discover` (MNDP — works even without an IP route).
-2. **Read before you write.** For common questions use the curated read tools first:
-   `mikrotik_system_overview`, `mikrotik_interfaces`, `mikrotik_ip_addresses`, `mikrotik_routes`,
-   `mikrotik_arp`, `mikrotik_queues` (`kind`), `mikrotik_ppp` (`section`), `mikrotik_users`
-   (`section`), `mikrotik_hotspot` (`section`), `mikrotik_wireless` (`section`), `mikrotik_logs`.
-3. **Use `mikrotik_command` for everything else, and for all writes.** The curated tools above are
-   read-only; to create/modify/delete (routes, queues, PPP secrets, users, hotspot, wireless, …) call
-   `mikrotik_command` with the RouterOS API path (e.g. `/ppp/secret/add`) and API-form parameters:
-   filters as `?name=value`, name-value words as `=name=value`. Target by inventory `router` name, or
-   ad-hoc `host`/`username`/`password`.
+2. **Read before you write.** Two curated read tools cover the common starting points:
+   `mikrotik_system_overview` (identity + resource + routerboard in one call — the best "first contact"
+   probe) and `mikrotik_logs` (recent log entries). For every other read, use `mikrotik_command` with
+   the print path (e.g. `/ip/address/print`, `/ip/route/print`, `/interface/print`,
+   `/ip/firewall/filter/print`) — the domain skills list the exact paths.
+3. **Use `mikrotik_command` for all other reads and all writes.** Call it with the RouterOS API path
+   (e.g. `/ppp/secret/add`) and API-form parameters: filters as `?name=value`, name-value words as
+   `=name=value`. Target by inventory `router` name, or ad-hoc `host`/`username`/`password`.
 4. **For multi-step, lockout-prone changes, use `mikrotik_safe_batch`.** It runs an ordered list of
    commands as one all-or-nothing Safe Mode transaction (auto-rollback on any failure or dropped
    connection), and `commit=false` gives a real dry-run. See the Safe Mode rule below.
@@ -50,7 +49,9 @@ tools over shelling out; they handle transports, the router inventory, and safet
   leaving a change. Prefer it for firewall/addressing/routing changes where a bad rule could strand you.
   It needs a **session transport** (Api/ApiSsl/Telnet/MacTelnet/WinboxCli/WinboxCliMac/WinboxNative —
   not REST), and reverts **configuration only** (not reboots, upgrades, resets, or file ops — keep
-  those out of a batch). It still respects the read-only guardrail. When a batch isn't appropriate,
+  those out of a batch). It still respects the read-only guardrail. **Run one `mikrotik_safe_batch` at a
+  time** and don't overlap it with other writes: RouterOS Safe Mode is a single, router-wide slot, so
+  concurrent safe-mode sessions interfere with each other's commit/rollback. When a batch isn't appropriate,
   fall back to reversible single steps: add rules with `=disabled=yes`, verify, then enable; change one
   thing at a time; and always keep your own access path open.
 - **Protect the router's flash — avoid recurring config writes.** Every config change (including a

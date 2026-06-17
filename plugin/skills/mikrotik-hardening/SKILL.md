@@ -11,7 +11,7 @@ security/maintenance baseline; it composes `mikrotik-firewall` (input lockdown),
 
 ## Read first
 
-`/ip/service/print`, `/user/print` + `/user/group/print` (or `mikrotik_users`),
+`/ip/service/print`, `/user/print` + `/user/group/print`,
 `/ip/neighbor/discovery-settings/print`, `/tool/mac-server/print`, `/system/package/print`,
 `/system/routerboard/print`. Summarize current exposure before changing anything.
 

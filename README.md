@@ -25,8 +25,8 @@ for connecting AI agents to real routers for ops, diagnostics, and automation.
 - **Router inventory** — refer to routers by logical name (`core`, `edge-1`); credentials come from
   environment variables / a secret store, never from the AI prompt. Ad-hoc one-off targets are also
   supported.
-- **Read & modify router state** — a guarded raw command tool plus curated read tools for the common
-  questions (system health, interfaces, IP addresses, logs).
+- **Read & modify router state** — a guarded raw command tool, a Safe Mode transaction tool for
+  all-or-nothing multi-step edits, plus two curated read conveniences (system overview, logs).
 - **MNDP discovery** — find routers on the local segment (identity, version, board, MAC, IP) with no
   IP connectivity required.
 - **Safety first** — read-only by default; write commands (`add`/`set`/`remove`/`move`/…) are refused
@@ -38,18 +38,9 @@ for connecting AI agents to real routers for ops, diagnostics, and automation.
 |---|---|
 | `mikrotik_list_routers` | List configured routers (no secrets) and server policy. |
 | `mikrotik_discover` | MNDP discovery of routers on the local network. |
-| `mikrotik_system_overview` | Identity + resource (CPU/mem/uptime) + routerboard. |
-| `mikrotik_interfaces` | Interface list with state and counters. |
-| `mikrotik_ip_addresses` | Configured IPv4 addresses. |
-| `mikrotik_routes` | IPv4 routing table. |
-| `mikrotik_arp` | IPv4 ARP table. |
-| `mikrotik_queues` | Traffic queues — `kind`: simple / tree / type. |
-| `mikrotik_ppp` | PPP (PPPoE/VPN) — `section`: secret / profile / active. |
-| `mikrotik_users` | Login accounts & rights — `section`: users / groups. |
-| `mikrotik_hotspot` | Hotspot — `section`: users / profiles / active / bindings. |
-| `mikrotik_wireless` | Legacy WLAN — `section`: interfaces / security / registration. |
+| `mikrotik_system_overview` | Identity + resource (CPU/mem/uptime) + routerboard in one call. |
 | `mikrotik_logs` | Most recent log entries. |
-| `mikrotik_command` | Run any RouterOS API command over any transport (guarded; the path for all writes). |
+| `mikrotik_command` | Run any RouterOS API command over any transport (guarded; the path for all reads not covered above and all writes). |
 | `mikrotik_safe_batch` | Run an ordered command list as one Safe Mode transaction — auto-rollback on any failure or dropped connection; `commit=false` for a dry-run. |
 
 ## Quick start

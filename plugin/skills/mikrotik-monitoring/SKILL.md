@@ -13,7 +13,7 @@ are writes (confirm first). Composes `mikrotik-admin` (safety), `mikrotik-firewa
 
 - `mikrotik_system_overview` (or `/system/resource/print`) — CPU load, free memory, uptime, RouterOS
   version, architecture. `/system/health/print` — temperature/voltage/fan (hardware-dependent).
-- `mikrotik_interfaces` + `/interface/print stats` — running state, rx/tx, **errors/drops** (rising
+- `/interface/print` + `/interface/print stats` — running state, rx/tx, **errors/drops** (rising
   errors = cabling/duplex/SFP issues).
 - `mikrotik_logs` (`/log/print`) — recent events. `/ip/dhcp-server/lease/print` — who's on the network.
 

@@ -30,7 +30,6 @@ builder.Services
     .WithTools<RouterCommandTools>()
     .WithTools<SafeBatchTools>()
     .WithTools<SystemTools>()
-    .WithTools<RouterStateTools>()
     .WithTools<DiscoveryTools>()
     .WithTools<InventoryTools>();
 

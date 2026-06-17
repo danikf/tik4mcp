@@ -13,9 +13,9 @@ mechanics; here we wire them together.
 
 ## Read first
 
-- `mikrotik_interfaces` + `/interface/wifi/print` (RouterOS 7.13+ "wifiwave2") **or**
-  `mikrotik_wireless` (`/interface/wireless`, legacy driver) — know which Wi-Fi stack the device has.
-- `/interface/bridge/print`, `mikrotik_ip_addresses`, `/ip/dhcp-server/print`, `/ip/dns/print` —
+- `/interface/print` + `/interface/wifi/print` (RouterOS 7.13+ "wifiwave2") **or**
+  `/interface/wireless/print` (legacy driver) — know which Wi-Fi stack the device has.
+- `/interface/bridge/print`, `/ip/address/print`, `/ip/dhcp-server/print`, `/ip/dns/print` —
   current segmentation and DNS.
 
 > ⚠️ If you are connected **over Wi-Fi**, reconfiguring the AP can disconnect you. Prefer a wired/API

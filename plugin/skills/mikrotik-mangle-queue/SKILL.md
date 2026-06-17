@@ -11,8 +11,8 @@ QoS *logic*; for field semantics and version specifics, prefer the MikroTik docs
 ## Always read the topology first
 
 Shaping decisions depend on the addressing and interfaces. Before proposing anything, gather context:
-- `mikrotik_interfaces` (or `/interface/print`) — names, which is WAN vs LAN/bridge, link speeds.
-- `mikrotik_ip_addresses` and `mikrotik_routes` / `mikrotik_arp` — subnets, gateway, who's behind what.
+- `/interface/print` — names, which is WAN vs LAN/bridge, link speeds.
+- `/ip/address/print` and `/ip/route/print` / `/ip/arp/print` — subnets, gateway, who's behind what.
 - Existing config: `/ip/firewall/mangle/print`, `/queue/simple/print`, `/queue/tree/print`,
   `/queue/type/print`. Explain what's already there before changing it.
 

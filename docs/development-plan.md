@@ -42,15 +42,21 @@ Every write passes through `AccessPolicy.EnsureAllowed`. Every connection is bui
 - Solution, server project, tik4net alpha reference, MIT license, README, dev plan.
 - DI host with stdio transport; configuration binding (appsettings + env override).
 - `ConnectionResolver` covering all in-core transports; `AccessPolicy` read-only guardrail.
-- Tools (14): inventory `mikrotik_list_routers`; discovery `mikrotik_discover`; curated read tools
-  `mikrotik_system_overview`, `mikrotik_interfaces`, `mikrotik_ip_addresses`, `mikrotik_routes`,
-  `mikrotik_arp`, `mikrotik_queues`, `mikrotik_ppp`, `mikrotik_users`, `mikrotik_hotspot`,
-  `mikrotik_wireless`, `mikrotik_logs`; and the guarded raw `mikrotik_command` (the path for all writes).
+- Tools (6): inventory `mikrotik_list_routers`; discovery `mikrotik_discover`; curated read
+  conveniences `mikrotik_system_overview` and `mikrotik_logs`; the guarded raw `mikrotik_command`; and
+  the Safe Mode transaction tool `mikrotik_safe_batch`.
+  > **History:** M0 originally shipped 14 tools including ten 1:1 read passthroughs (`mikrotik_interfaces`,
+  > `mikrotik_ip_addresses`, `mikrotik_routes`, `mikrotik_arp`, `mikrotik_queues`, `mikrotik_ppp`,
+  > `mikrotik_users`, `mikrotik_hotspot`, `mikrotik_wireless`). These were **removed** once `mikrotik_safe_batch`
+  > completed the write story — the "thin server + rich skills" bet (M3): the skills carry the exact print
+  > paths, so the passthroughs only added tool-schema bloat. `system_overview` (a multi-command aggregator) and
+  > `logs` were kept.
 - Claude Code plugin bundle (`plugin/`) with `mikrotik-admin` + `router-init` skills + `.mcp.json`.
 
-> Read coverage for the requested object types (IP, routes, ARP, queues/tree, PPP, users & rights,
-> hotspot users/profiles, WLAN interfaces & security) is in place via the curated tools above; **typed
-> write tools** for these remain M3 (writes work today through `mikrotik_command`).
+> Reads and writes for every object type (IP, routes, ARP, queues/tree, PPP, users & rights, hotspot,
+> WLAN, firewall, …) go through `mikrotik_command` (and `mikrotik_safe_batch` for transactional
+> multi-step edits); the domain skills carry the exact print/add/set paths. Per the M3 decision, typed
+> per-object tools are added only where schema/safety on a specific high-risk write earns it.
 
 ### M1 — Hardening & tests
 - Unit tests against `tik4net.testing` `TikFakeConnection` (no live router): policy classification,
@@ -93,9 +99,12 @@ judgment + current facts, which skills deliver more cheaply and maintainably tha
   `mikrotik-mangle-queue`, `mikrotik-home-wifi`, `mikrotik-vpn`, `mikrotik-hardening`,
   `mikrotik-monitoring`, `mikrotik-bridging-vlan`, `mikrotik-capsman`. Next candidates: containers,
   routing protocols (OSPF/BGP), hotspot.
-- **Native tools** stay limited to: the guarded raw command, discovery, inventory, and a few
-  read conveniences (`RouterStateTools`). Add a *typed write* tool only when schema validation or
-  safety on a specific high-risk write clearly justifies the maintenance cost.
+- **Native tools** stay limited to: the guarded raw command (`mikrotik_command`), the Safe Mode
+  transaction tool (`mikrotik_safe_batch`), discovery, inventory, and two read conveniences
+  (`mikrotik_system_overview`, `mikrotik_logs`). The ten 1:1 read passthroughs that M0 shipped were
+  removed (see M0 note) — they duplicated `mikrotik_command` and bloated the tool schema. Add a *typed
+  write* tool only when schema validation or safety on a specific high-risk write clearly justifies the
+  maintenance cost.
 - The prioritized, demand-grounded object-type list (and the `tik4net.entities`-exists-vs-gap audit)
   in [`native-entity-support.md`](native-entity-support.md) now serves mainly to guide **skill
   coverage** and to spot the rare object that warrants a native tool.

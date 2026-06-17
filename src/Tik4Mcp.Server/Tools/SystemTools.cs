@@ -40,26 +40,6 @@ public sealed class SystemTools
         });
     }
 
-    [McpServerTool(Name = "mikrotik_interfaces")]
-    [Description("List the router's interfaces with type, running/disabled state and traffic counters. Read-only.")]
-    public string Interfaces(
-        [Description("Inventory router name. Omit when using ad-hoc host/username/password.")] string? router = null,
-        [Description("Ad-hoc host/IP.")] string? host = null,
-        [Description("Ad-hoc username.")] string? username = null,
-        [Description("Ad-hoc password.")] string? password = null)
-        => Run(router, host, username, password,
-            conn => TikResultFormatter.ToJson(ReadRecords(conn, "/interface/print")));
-
-    [McpServerTool(Name = "mikrotik_ip_addresses")]
-    [Description("List the IPv4 addresses configured on the router and their interfaces. Read-only.")]
-    public string IpAddresses(
-        [Description("Inventory router name. Omit when using ad-hoc host/username/password.")] string? router = null,
-        [Description("Ad-hoc host/IP.")] string? host = null,
-        [Description("Ad-hoc username.")] string? username = null,
-        [Description("Ad-hoc password.")] string? password = null)
-        => Run(router, host, username, password,
-            conn => TikResultFormatter.ToJson(ReadRecords(conn, "/ip/address/print")));
-
     [McpServerTool(Name = "mikrotik_logs")]
     [Description("Return the most recent router log entries (time, topics, message). Read-only.")]
     public string Logs(
