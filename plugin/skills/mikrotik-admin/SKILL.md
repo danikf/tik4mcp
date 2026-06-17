@@ -22,6 +22,9 @@ tools over shelling out; they handle transports, the router inventory, and safet
    `mikrotik_command` with the RouterOS API path (e.g. `/ppp/secret/add`) and API-form parameters:
    filters as `?name=value`, name-value words as `=name=value`. Target by inventory `router` name, or
    ad-hoc `host`/`username`/`password`.
+4. **For multi-step, lockout-prone changes, use `mikrotik_safe_batch`.** It runs an ordered list of
+   commands as one all-or-nothing Safe Mode transaction (auto-rollback on any failure or dropped
+   connection), and `commit=false` gives a real dry-run. See the Safe Mode rule below.
 
 ## Safety rules
 
@@ -36,13 +39,20 @@ tools over shelling out; they handle transports, the router inventory, and safet
   dedicated, least-privilege RouterOS user for the AI and saving it as a named inventory entry
   (password via `TIK4MCP_Routers__<name>__Password`); see `router-init` and `mikrotik-hardening`.
 - When a write is rejected by policy, explain that the router is read-only rather than retrying.
-- **Safe Mode (today's limitation).** RouterOS Safe Mode auto-reverts config changes if the
-  controlling session drops — but it only works **within one continuous session**. Because each
-  `mikrotik_command` call currently opens and closes its own connection, Safe Mode cannot span multiple
-  tool calls, so don't promise it for multi-step edits. Until a single-session batch tool exists (see
-  the development plan), get the same protection by working **reversibly**: add rules with
-  `=disabled=yes`, verify, then enable; change one thing at a time; and always keep your own access
-  path open.
+- **Safe Mode — use `mikrotik_safe_batch` for lockout-prone, multi-step edits.** RouterOS Safe Mode
+  auto-reverts config changes if the controlling session drops, but it only works **within one
+  continuous session** — a plain `mikrotik_command` call opens and closes its own connection, so it
+  cannot hold Safe Mode across calls. The **`mikrotik_safe_batch`** tool solves this: give it an
+  ordered list of steps (`{ command, parameters? }`, same form as `mikrotik_command`); it opens **one**
+  session, enters Safe Mode, runs them all, and **commits only if every step succeeds** — any error, or
+  a dropped connection mid-batch, makes RouterOS **roll everything back**. Pass `commit=false` for a
+  true **dry-run**: all steps are applied and then reverted, proving the router accepts them without
+  leaving a change. Prefer it for firewall/addressing/routing changes where a bad rule could strand you.
+  It needs a **session transport** (Api/ApiSsl/Telnet/MacTelnet/WinboxCli/WinboxCliMac/WinboxNative —
+  not REST), and reverts **configuration only** (not reboots, upgrades, resets, or file ops — keep
+  those out of a batch). It still respects the read-only guardrail. When a batch isn't appropriate,
+  fall back to reversible single steps: add rules with `=disabled=yes`, verify, then enable; change one
+  thing at a time; and always keep your own access path open.
 - **Protect the router's flash — avoid recurring config writes.** Every config change (including a
   `/system/scheduler` job that flips a rule's `disabled` flag or add/removes objects) is persisted to
   the router's NAND/flash; doing it on a frequent schedule wears the storage and can eventually kill a

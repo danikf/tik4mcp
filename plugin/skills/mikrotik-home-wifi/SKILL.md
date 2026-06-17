@@ -140,12 +140,14 @@ Guests get internet only — no access to other home networks or the router (exc
   through the filter (e.g. a blocked test domain) and that curfew toggles at the set times.
 - All of this is **writes** — confirm with the user first, prefer reversible steps (add `=disabled=yes`,
   verify, enable), and protect your own management access before adding drops (see `mikrotik-firewall`).
+  For the lockout-prone parts (the kids/guest firewall blocks, especially when managing over Wi-Fi),
+  run the rule set through **`mikrotik_safe_batch`** so a mistake auto-reverts; dry-run with `commit=false`.
 
 ## Reference (MikroTik docs — manual.mikrotik.com)
 
-- [WiFi (wifiwave2)](https://manual.mikrotik.com/docs/Wireless/WiFi/) ·
-  [CAPsMAN](https://manual.mikrotik.com/docs/Wireless/capsman/) ·
-  [Virtual AP / repeater example](https://manual.mikrotik.com/docs/Wireless/WiFi/configuring-repeater/)
+- [WiFi (wifiwave2)](https://manual.mikrotik.com/docs/wireless/wifi/) ·
+  [CAPsMAN](https://manual.mikrotik.com/docs/wireless/wifi/capsman/) ·
+  [Virtual AP / repeater example](https://manual.mikrotik.com/docs/wireless/wifi/configuring-repeater/)
 - [Filter](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/filter) ·
   [NAT](https://manual.mikrotik.com/docs/firewall-and-quality-of-service/firewall/nat) ·
   [Scheduler](https://manual.mikrotik.com/docs/cli-reference/system/scheduler/) ·

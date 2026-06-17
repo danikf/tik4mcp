@@ -28,6 +28,7 @@ builder.Services
     .AddMcpServer()
     .WithStdioServerTransport()
     .WithTools<RouterCommandTools>()
+    .WithTools<SafeBatchTools>()
     .WithTools<SystemTools>()
     .WithTools<RouterStateTools>()
     .WithTools<DiscoveryTools>()

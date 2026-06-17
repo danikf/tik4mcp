@@ -86,13 +86,16 @@ Shipped both as a dotnet tool (`tik4mcp`) and as a **Claude Code plugin** under 
 descriptions and the skills' guidance in sync with the actual tools in `src/`.
 
 **Design direction — skills over native tools.** The strategic bet is a *thin server*
-(one guarded `mikrotik_command` + safety/inventory/discovery + a few read conveniences) plus *rich
+(one guarded `mikrotik_command`, the Safe Mode transaction tool `mikrotik_safe_batch`, plus
+safety/inventory/discovery + a few read conveniences) plus *rich
 skills* that carry RouterOS best-practices and link to the live docs at `manual.mikrotik.com` (the
 old `help.mikrotik.com`/`wiki.mikrotik.com` are frozen). An LLM already knows RouterOS API syntax;
 what it needs is domain judgment and current facts — cheaper and more maintainable to put in skills
 than to hand-code a typed C# tool per object type. Add native tools only where schema/safety on a
 specific high-risk write clearly justifies it. When adding/maintaining skills, verify doc links
-resolve on `manual.mikrotik.com` (its URL scheme is `/docs/<section>/<page>`).
+resolve on `manual.mikrotik.com` (its URL scheme is `/docs/<section>/<page>`, all **lowercase-hyphenated**
+— e.g. `/docs/wireless/wifi/capsman/`, `/docs/bridging-and-switching/vxlan/`; the old space-encoded /
+TitleCase paths like `/docs/Wireless/WiFi/` now 404).
 
 See `docs/development-plan.md` for the milestone roadmap and locked v1 decisions, and
 `docs/native-entity-support.md` for the prioritized, demand-grounded list of RouterOS object types to

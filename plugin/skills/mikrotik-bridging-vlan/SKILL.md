@@ -37,7 +37,9 @@ are tagged (trunk) or untagged (access) for each VLAN, and a port's **PVID** tag
 > only on a VLAN the bridge is tagged/untagged for. Before flipping it on: make sure your management
 > access lands on a configured VLAN (e.g. keep one access port with the right PVID, or tag the mgmt
 > VLAN toward the bridge), and prefer doing the switch over a wired/MAC connection. This is the #1
-> VLAN lockout. Consider doing it as a reversible batch (see safe mode in `mikrotik-admin`).
+> VLAN lockout. Strongly prefer running the bridge-VLAN setup (tag/untag rows, PVIDs, **and** the final
+> `=vlan-filtering=yes`) as one **`mikrotik_safe_batch`** transaction: if the flip locks you out, Safe
+> Mode rolls the whole change back automatically. Dry-run it with `commit=false` first.
 
 ## VLAN interfaces for L3 (router-on-a-stick)
 
@@ -78,7 +80,7 @@ management path first; do them reversibly). See `mikrotik-admin`.
 ## Reference (MikroTik docs — manual.mikrotik.com)
 
 - [Bridge (CLI reference — bridge, ports, `/interface/bridge/vlan`, PVID, vlan-filtering)](https://manual.mikrotik.com/docs/cli-reference/interface/bridge/)
-- [VXLAN](https://manual.mikrotik.com/docs/Bridging%20and%20Switching/vxlan/) ·
+- [VXLAN](https://manual.mikrotik.com/docs/bridging-and-switching/vxlan/) ·
   [macvlan](https://manual.mikrotik.com/docs/cli-reference/interface/macvlan/)
 - Related skills: `mikrotik-ip`, `mikrotik-firewall`, `mikrotik-home-wifi`, `mikrotik-capsman`,
   `mikrotik-admin`.

@@ -67,17 +67,21 @@ Every write passes through `AccessPolicy.EnsureAllowed`. Every connection is bui
   second `mikrotik_confirm` call applies it.
 - **Path allowlist/denylist** and per-router rate limiting.
 - **Backup-before-change** (`/system/backup` or export) + documented rollback.
-- **Safe Mode batch tool.** RouterOS Safe Mode auto-reverts changes if the controlling session drops,
-  but it only works **within one session** — and tik4mcp currently opens a fresh connection per tool
-  call, so Safe Mode can't span calls. Design: a single `mikrotik_safe_batch` tool that takes an
-  ordered list of commands, opens **one** connection, enters Safe Mode, runs them all, and releases
-  Safe Mode only on success; any error or a dropped connection mid-batch triggers RouterOS auto-revert.
-  Notes: (1) the binary API doesn't expose Safe Mode — implement over a **CLI/terminal transport**
-  (WinBox-CLI/SSH/Telnet) that can send the Safe-Mode toggle via the raw `ITikSession`; (2) pairs with
-  dry-run/approval (preview the batch, then commit). An alternative is a persistent **session-handle**
-  API (open → many calls → commit/close with idle-timeout auto-revert) — more flexible but more
-  lifecycle state; prefer the batch tool first. Until then, skills use reversible
-  add-disabled→verify→enable edits (documented in `mikrotik-admin`).
+- **Safe Mode batch tool — ✅ implemented (`mikrotik_safe_batch`).** RouterOS Safe Mode auto-reverts
+  changes if the controlling session drops, but it only works **within one session** — and a plain
+  `mikrotik_command` call opens a fresh connection per call, so Safe Mode can't span calls. The
+  `mikrotik_safe_batch` tool (`Tools/SafeBatchTools.cs`) takes an ordered list of steps
+  (`{ command, parameters? }`), opens **one** connection, enters Safe Mode, runs them all, and releases
+  (commits) only on full success; any error or a dropped connection mid-batch triggers RouterOS
+  auto-revert (in-place `SafeModeUnroll`, falling back to disconnect-rollback where unroll is
+  unsupported). `commit=false` is a built-in **dry-run** (apply all, then revert). Implementation notes:
+  tik4net 4.0.0-alpha exposes `ITikConnection.SafeModeTake/Release/Unroll/Get` plus
+  `connection.Supports(TikConnectionCapability.SafeMode)` — works on the binary API (scriptable
+  `/safe-mode`, ROS 7.18+) and on CLI terminals (`Ctrl+X`/`Ctrl+D`, older ROS too); REST is rejected.
+  Writes still pass `AccessPolicy.EnsureAllowed`. Reverts **configuration only** (not reboots/upgrades/
+  resets/file ops). Possible follow-up: a persistent **session-handle** API (open → many calls →
+  commit/close with idle-timeout auto-revert) — more flexible but more lifecycle state; the batch tool
+  covers the common case. Pairs with the planned dry-run/approval gate.
 
 ### M3 — Domain coverage: **skills first, native tools only where they earn it**
 Direction decided: rather than hand-code a typed C# tool per RouterOS object type, keep the server
@@ -120,8 +124,8 @@ judgment + current facts, which skills deliver more cheaply and maintainably tha
   protocol-level debugging from within an agent session.
 - **Connectivity probe tool** — given a host/MAC, report which transports succeed (API/REST/WinBox/…),
   useful for onboarding a new router.
-- **Safe Mode integration** — wrap risky write sessions in RouterOS Safe Mode so a lost connection
-  auto-rolls-back (supported by tik4net CLI transports).
+- **Safe Mode integration** — ✅ done via `mikrotik_safe_batch` (see M2): risky write batches run in
+  RouterOS Safe Mode so a lost connection or any failed step auto-rolls-back.
 - **Config export/snapshot tool** — `/export` to a stored artifact for diffing and change review.
 - **Redaction layer** — scrub secrets (passwords, pre-shared keys, private keys) from tool output
   before it reaches the model.

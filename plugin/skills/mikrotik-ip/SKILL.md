@@ -76,7 +76,9 @@ leases show client hostnames and MACs — handy for inventory).
 These are writes — the server must run with writes enabled, and you should **confirm with the user**
 before changing addressing/routing/DNS/DHCP. Changing the LAN address or DHCP can drop clients;
 changing the default route or DNS can cut the router's own connectivity. Prefer additive, reversible
-steps (add `=disabled=yes`, verify, then enable). See the `mikrotik-admin` skill for the global rules.
+steps (add `=disabled=yes`, verify, then enable), or run a connectivity-affecting change as a
+**`mikrotik_safe_batch`** transaction so RouterOS auto-reverts it if you lose access. See the
+`mikrotik-admin` skill for the global rules.
 
 ## Reference (MikroTik docs — manual.mikrotik.com)
 

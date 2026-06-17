@@ -52,9 +52,12 @@ A wrong rule can **lock you out instantly**. Always:
 
 1. **Confirm with the user** before any filter/NAT change; restate the intended effect.
 2. **Protect your own access first.** If managing remotely, ensure an `accept` rule for your
-   management source precedes any new `drop`. (RouterOS **Safe Mode** would auto-revert on a dropped
-   session, but it only spans a *single* session — it does **not** carry across separate
-   `mikrotik_command` calls, so don't rely on it here; see the safe-mode note in `mikrotik-admin`.)
+   management source precedes any new `drop`. For a multi-rule change, run it through
+   **`mikrotik_safe_batch`** instead of separate `mikrotik_command` calls: it holds RouterOS **Safe
+   Mode** across the whole batch on one session, so if a rule locks you out (or the connection drops)
+   every change is **rolled back automatically**. Use `commit=false` first as a dry-run to confirm the
+   router accepts the rules. (A single `mikrotik_command` cannot do this — Safe Mode only spans one
+   session; see the safe-mode note in `mikrotik-admin`.)
 3. **Order matters — be explicit.** New filter rules append to the end by default (often *after* a
    drop, so they never match). Use `=place-before=<id>` on add, or `/ip/firewall/filter/move` with
    `=numbers=<id> =destination=<pos>`. Always re-print and verify order after changing.
@@ -67,6 +70,18 @@ Example — add a stateful baseline accept at the top of `input`:
 
 Example — masquerade for a dynamic WAN:
 `/ip/firewall/nat/add` · `=chain=srcnat` · `=action=masquerade` · `=out-interface-list=WAN`
+
+Example — apply a several-rule baseline atomically with auto-rollback via `mikrotik_safe_batch`
+(`commit=false` first to dry-run, then `commit=true`):
+```
+steps = [
+  { command: "/ip/firewall/filter/add", parameters: ["=chain=input","=action=accept","=connection-state=established,related,untracked","=place-before=0","=comment=baseline est/rel"] },
+  { command: "/ip/firewall/filter/add", parameters: ["=chain=input","=action=drop","=connection-state=invalid","=comment=drop invalid"] },
+  { command: "/ip/firewall/filter/add", parameters: ["=chain=input","=action=accept","=in-interface-list=LAN","=comment=allow LAN to router"] },
+  { command: "/ip/firewall/filter/add", parameters: ["=chain=input","=action=drop","=comment=drop all else"] }
+]
+```
+If any step is rejected — or you lose the connection partway — RouterOS reverts the whole set.
 
 ## Audit / recommendations checklist
 

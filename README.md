@@ -50,6 +50,7 @@ for connecting AI agents to real routers for ops, diagnostics, and automation.
 | `mikrotik_wireless` | Legacy WLAN — `section`: interfaces / security / registration. |
 | `mikrotik_logs` | Most recent log entries. |
 | `mikrotik_command` | Run any RouterOS API command over any transport (guarded; the path for all writes). |
+| `mikrotik_safe_batch` | Run an ordered command list as one Safe Mode transaction — auto-rollback on any failure or dropped connection; `commit=false` for a dry-run. |
 
 ## Quick start
 

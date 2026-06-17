@@ -73,6 +73,7 @@ confirm with the user, and verify CAPs reconnect and clients associate afterward
 
 ## Reference (MikroTik docs — manual.mikrotik.com)
 
-- [CAPsMAN](https://manual.mikrotik.com/docs/Wireless/capsman/) ·
-  [WiFi (wifiwave2)](https://manual.mikrotik.com/docs/Wireless/WiFi/)
+- [WiFi / wifiwave2 CAPsMAN](https://manual.mikrotik.com/docs/wireless/wifi/capsman/) ·
+  [WiFi (wifiwave2) overview](https://manual.mikrotik.com/docs/wireless/wifi/) ·
+  [Legacy CAPsMAN (`/caps-man`)](https://manual.mikrotik.com/docs/wireless/abgn/capsman/)
 - Related skills: `mikrotik-bridging-vlan`, `mikrotik-home-wifi`, `mikrotik-ip`, `mikrotik-admin`.
